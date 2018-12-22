@@ -1,0 +1,19 @@
+{
+  "name": "killerpoolscoreboard.domain",
+  "version": "1.0.0",
+  "description": "The application domain for KillerPoolScoreBoard",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NicholasMead/KillerPoolScoreBoard.git"
+  },
+  "author": "Nicholas Mead",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NicholasMead/KillerPoolScoreBoard/issues"
+  },
+  "homepage": "https://github.com/NicholasMead/KillerPoolScoreBoard#readme"
+}
