@@ -1,6 +1,7 @@
 import { IEvent } from "../framework/IEvent";
 import { Player } from "../models/Player";
 import { PlayerCreated } from "../events/PlayerCreated";
+import { IPlayerEvent } from '../events/abstractions/IPlayerEvent'
 
 export class PlayerRepository {
     _eventStore: IEvent[];
@@ -9,8 +10,16 @@ export class PlayerRepository {
         this._eventStore = eventStore;
     }
 
-    public GetPlayers(): {[name: string] : Player} {
-        return mapReduce<IEvent, {[name: string] : Player}>(this._eventStore, {}, (players, event) => {
+    public Add(player: Player) {
+        player
+            .PopEvents()
+            .forEach(event => {
+                this._eventStore.push(event);
+            })
+    }
+
+    public GetAll(): { [name: string]: Player } {
+        return mapReduce<IEvent, { [name: string]: Player }>(this._eventStore, {}, (players, event) => {
             if (event.Type == PlayerCreated.TypeName) {
                 var player = Player.CreateDefaultPlayer();
                 player.ApplyEvent(event);

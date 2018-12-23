@@ -15,12 +15,23 @@ export class KillerPoolScoreBoardApplication {
 
     }
 
-    public AddPlayer(name: string, startingLives: number = 3) {
-        this._commandDispatcher.Dispatch(new AddPlayerCommand(name, startingLives));
+    public get Events(): IEvent[] {
+        return this._eventStore;
     }
 
-    public GetPlayers() : Player[] {
-        //TODO: implement func 
-        throw new Error("Not Implemented");
+    public AddPlayer(name: string) {
+        this._commandDispatcher.Dispatch(new AddPlayerCommand(name));
+    }
+
+    public GetPlayers(): Player[] {
+        let playersDict = new PlayerRepository(this._eventStore)
+            .GetAll();
+
+        let players: Player[] = [];
+        for (var player in playersDict) {
+            players.push(playersDict[player]);
+        }
+
+        return players;
     }
 }

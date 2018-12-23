@@ -7,16 +7,14 @@ import { PlayerRepository } from "../repositories/PlayerRepository";
 export class AddPlayerCommand implements ICommand {
     Type: string;
     Name: string;
-    StartingLives: number;
 
     static GetType(): string {
         return "AddPlayerCommand";
     }
 
-    constructor(name: string, startingLives: number) {
+    constructor(name: string) {
         this.Type = AddPlayerCommand.GetType();
         this.Name = name;
-        this.StartingLives = startingLives;
     }
 }
 
@@ -33,9 +31,9 @@ export class AddPlayerCommandHandler implements ICommandHandler {
         // if(this._playerRepository.ContainsPlayerWithName(addPlayerCommand.Name))
         //     return CommandResult.Fail("Player Already Exists");
 
-        var newPlayer = new Player(addPlayerCommand.Name);
+        var newPlayer = Player.CreateNewPlayer(addPlayerCommand.Name);
 
-        this._playerRepository.AddPlayer(newPlayer);
+        this._playerRepository.Add(newPlayer);
 
         return CommandResult.Success();
     };
