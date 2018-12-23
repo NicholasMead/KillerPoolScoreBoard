@@ -9,12 +9,12 @@ export class PlayerRepository {
         this._eventStore = eventStore;
     }
 
-    public GetPlayers(): Player[] {
-        return mapReduce<IEvent, Player[]>(this._eventStore, [], (players, event) => {
-            if (event.Type == PlayerCreated.TypeName)
-            {
+    public GetPlayers(): {[name: string] : Player} {
+        return mapReduce<IEvent, {[name: string] : Player}>(this._eventStore, {}, (players, event) => {
+            if (event.Type == PlayerCreated.TypeName) {
                 var player = Player.CreateDefaultPlayer();
                 player.ApplyEvent(event);
+                players[player.Name] = player;
             }
 
             return players;
