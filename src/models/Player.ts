@@ -1,18 +1,33 @@
-export class Player {
+import { Entity } from "../framework/Entity";
+import { PlayerCreated } from "../events/PlayerCreated";
 
-    public constructor(name: string) {
-        this.Name = name;
+export class Player extends Entity<string> {
+
+    private constructor(name: string) {
+        super(name)
+        this.Register(PlayerCreated.TypeName, ev => {
+            var playerCreatedEvent = ev as PlayerCreated;
+            if(!playerCreatedEvent)
+                return;
+            
+            this._id = playerCreatedEvent.Name;
+        })
     }
 
-    public Name: string;
-}
+    public get Name(): string {
+        return this.Id;
+    }
 
-export class StartNewGame
-{
-    public constructor(players: Player[])
+    public static CreateNewPlayer(name: string) : Player { 
+        var player = this.CreateDefaultPlayer();
+            
+        player.Raise(new PlayerCreated(name));
+
+        return player;
+    }
+
+    public static CreateDefaultPlayer()
     {
-        this.Players = players;
+        return new Player("");
     }
-    
-    public Players : Player[];
 }

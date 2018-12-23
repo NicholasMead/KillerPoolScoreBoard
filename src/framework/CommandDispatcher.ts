@@ -18,9 +18,10 @@ export class CommandDispatcher {
         return handler.Handle(command);
     }
 
-    public Register(handler : ICommandHandler)
+    public Register(handler : ICommandHandler) : CommandDispatcher
     {
         this._handlers[handler.Type] = handler;
+        return this;
     }
 }
 
