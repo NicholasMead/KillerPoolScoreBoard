@@ -1,1 +1,2 @@
-export * from './models/Player';
+export * from './aggregateRoots/killerPool';
+export * from './aggregateRoots/killerPool/player';
