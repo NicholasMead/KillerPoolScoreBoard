@@ -1,5 +1,5 @@
-import { IEvent } from "../framework/IEvent";
-export class BaseEvent implements IEvent {
+import { IEvent } from "../../framework/IEvent";
+export abstract class BaseEvent implements IEvent {
     
     private _type: string;
     public get Type() : string{

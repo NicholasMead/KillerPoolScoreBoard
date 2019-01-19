@@ -1,8 +1,6 @@
 import { IEvent } from "./framework/IEvent";
 import { CommandDispatcher } from "./framework/CommandDispatcher";
-import { Player } from "./models/Player";
-import { AddPlayerCommand, AddPlayerCommandHandler } from "./commands/addPlayer";
-import { PlayerRepository } from "./repositories/PlayerRepository";
+import { Player } from "./aggregateRoots/killerPool/player";
 
 export class KillerPoolScoreBoardApplication {
     private _eventStore: IEvent[];
@@ -10,9 +8,7 @@ export class KillerPoolScoreBoardApplication {
 
     public constructor() {
         this._eventStore = [];
-        this._commandDispatcher = new CommandDispatcher()
-            .Register(new AddPlayerCommandHandler(new PlayerRepository(this._eventStore)));
-
+        this._commandDispatcher = new CommandDispatcher();
     }
 
     public get Events(): IEvent[] {
@@ -20,18 +16,10 @@ export class KillerPoolScoreBoardApplication {
     }
 
     public AddPlayer(name: string) {
-        this._commandDispatcher.Dispatch(new AddPlayerCommand(name));
+        throw new Error("Not implemented");
     }
 
     public GetPlayers(): Player[] {
-        let playersDict = new PlayerRepository(this._eventStore)
-            .GetAll();
-
-        let players: Player[] = [];
-        for (var player in playersDict) {
-            players.push(playersDict[player]);
-        }
-
-        return players;
+        throw new Error("Not implemented");
     }
 }
