@@ -24,8 +24,8 @@ export class KillerPool extends Entity<Guid> {
     private _nextPlayerIndex: number = 0;
     private _gameStarted: boolean = false;
 
-    public constructor(id: Guid) {
-        super(id);
+    public constructor(id?: Guid) {
+        super(id ? id : Guid.newGuid());
         this.Register("PlayerEnteredKillerPool", this.onPlayerEntered.bind(this));
         this.Register("KillerPoolStarted", this.onGameStarted.bind(this));
         this.Register("PlayerTookShot", this.onPlayerTookShot.bind(this));

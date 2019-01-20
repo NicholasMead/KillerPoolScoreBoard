@@ -1,12 +1,14 @@
+//framework
 import { expect, assert } from 'chai';
+//model
 import { KillerPool } from '../src/domain/aggregateRoots/killerPool';
-import { Guid } from '../src/domain/services/guid';
 import { Player } from '../src/domain/aggregateRoots/killerPool/player';
+import { Shot } from '../src/domain/aggregateRoots/killerPool/shot';
+//errors
+import { InsufficientPlayersInGame } from '../src/domain/errors/InsufficientPlayersInGame';
 import { GameAlreadyStarted } from '../src/domain/errors/GameAlreadyStarted';
 import { GameNotStarted } from '../src/domain/errors/GameNotStarted';
 import { GameEnded } from '../src/domain/errors/GameEnded';
-import { InsufficientPlayersInGame } from '../src/domain/errors/InsufficientPlayersInGame';
-import { Shot } from '../src/domain/aggregateRoots/killerPool/shot';
 
 const addPlayer = (killerPool: KillerPool) : Player => {
     const playerCount = killerPool.Players.length;
@@ -16,19 +18,15 @@ const addPlayer = (killerPool: KillerPool) : Player => {
 }
 
 const addPlayers = (killerPool: KillerPool, playerCount: number) : Player[] => {
-    const players : Player[] = [];
-
     for(let i = 0; i < playerCount; i++)
-    {
-        players.push(addPlayer(killerPool));
-    }    
-    return players;
+        addPlayer(killerPool);
+    return killerPool.Players;
 }
 
 describe("KillerPool", () => {     
 
     it("Can add players", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
         const players = addPlayers(killer, 2);
         
         expect(killer.Players.length).to.eq(2);
@@ -37,7 +35,7 @@ describe("KillerPool", () => {
     });
 
     it("Cannot add players after game started", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
         addPlayers(killer, 2);
 
         killer.StartGame();
@@ -46,7 +44,7 @@ describe("KillerPool", () => {
     });
 
     it("Cannot start game twice", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
         addPlayers(killer, 2);
         killer.StartGame();
 
@@ -54,20 +52,20 @@ describe("KillerPool", () => {
     });
 
     it("Cannot start game without 0 players", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
 
         assert.throws(() => killer.StartGame(), InsufficientPlayersInGame);
     });
 
     it("Cannot start game without 1 player", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
         addPlayer(killer);
 
         assert.throws(() => killer.StartGame(), InsufficientPlayersInGame);
     });
 
     it("All players start with 3 lives", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
         addPlayers(killer, 2);
         
         killer.StartGame();
@@ -77,7 +75,7 @@ describe("KillerPool", () => {
     });
 
     it("First player added shoots first", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
         const players = addPlayers(killer, 2);
         
         killer.StartGame();
@@ -86,20 +84,20 @@ describe("KillerPool", () => {
     });
 
     it("Cannot get next player before the game starts", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
         addPlayers(killer, 2);
 
         assert.throws(() => killer.NextPlayer, GameNotStarted);
     });
 
     it("Cannot shoot before the game starts", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
 
         assert.throws(() => killer.TakeShot(Shot.Pot(1)), GameNotStarted);
     });
 
     it("Shooting a foul loses 1 life", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
         const players = addPlayers(killer, 2);
         killer.StartGame();
 
@@ -110,7 +108,7 @@ describe("KillerPool", () => {
     });
 
     it("Shooting a multi foul loses many lifes", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
         const players = addPlayers(killer, 2);
         killer.StartGame();
 
@@ -121,7 +119,7 @@ describe("KillerPool", () => {
     });
 
     it("Potting single ball maintains lifes", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
         const players = addPlayers(killer, 2);
         killer.StartGame();
 
@@ -132,7 +130,7 @@ describe("KillerPool", () => {
     });
 
     it("Potting multiple balls adds lifes", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
         const players = addPlayers(killer, 2);
         killer.StartGame();
 
@@ -143,7 +141,7 @@ describe("KillerPool", () => {
     });
 
     it("After takeing a shot, its the next players turn", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
         const players = addPlayers(killer, 2);
         killer.StartGame();
 
@@ -153,7 +151,7 @@ describe("KillerPool", () => {
     });
 
     it("First player shoots after last player", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
         const players = addPlayers(killer, 3);
         killer.StartGame();
 
@@ -168,7 +166,7 @@ describe("KillerPool", () => {
     });
 
     it("Players start in the game", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
         const players = addPlayers(killer, 3);
         
         killer.StartGame();
@@ -178,7 +176,7 @@ describe("KillerPool", () => {
     });
 
     it("Players not added are not in the game", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
         addPlayers(killer, 2);
 
         const rouge = new Player("rouge");
@@ -187,7 +185,7 @@ describe("KillerPool", () => {
     });
 
     it("Players with 0 lives are out of the game", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
         const players = addPlayers(killer, 3);
         killer.StartGame();
 
@@ -198,7 +196,7 @@ describe("KillerPool", () => {
     });
 
     it("Players that are out, do not play shots", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
         const players = addPlayers(killer, 3);
         killer.StartGame();
 
@@ -213,7 +211,7 @@ describe("KillerPool", () => {
 
     
     it("Last player remaining wins", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
         const players = addPlayers(killer, 3);
         killer.StartGame();
 
@@ -229,7 +227,7 @@ describe("KillerPool", () => {
     });
 
     it("Cannot take shots after game ended", () => {
-        const killer = new KillerPool(Guid.newGuid());
+        const killer = new KillerPool();
         addPlayers(killer, 2);
         killer.StartGame();
         killer.TakeShot(Shot.Foul(4));
