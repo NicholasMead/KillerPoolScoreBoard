@@ -7,21 +7,21 @@ import { IEvent } from '../src/domain/framework/IEvent';
 import { KillerPoolRepository } from '../src/repositories/KillerPoolRepository';
 import { Shot } from '../src/domain/aggregateRoots/killerPool/shot';
 
-const addPlayer = (killerPool: KillerPool) : Player => {
-    const playerCount = killerPool.Players.length;
-    const player = new Player(`Player${playerCount + 1}`);
-    killerPool.AddPlayer(player);
-    return player;
-}
-
-const addPlayers = (killerPool: KillerPool, playerCount: number) : Player[] => {
-    for(let i = 0; i < playerCount; i++)
-        addPlayer(killerPool);
-    return killerPool.Players;
-}
-
 const createKillerPool = (players: number): KillerPool => {
-    const pool = new KillerPool();   
+    const addPlayer = (killerPool: KillerPool): Player => {
+        const playerCount = killerPool.Players.length;
+        const player = new Player(`Player${playerCount + 1}`);
+        killerPool.AddPlayer(player);
+        return player;
+    }
+
+    const addPlayers = (killerPool: KillerPool, playerCount: number): Player[] => {
+        for (let i = 0; i < playerCount; i++)
+            addPlayer(killerPool);
+        return killerPool.Players;
+    }
+
+    const pool = new KillerPool();
     addPlayers(pool, players);
     pool.StartGame();
     pool.TakeShot(Shot.Foul(1));
@@ -29,7 +29,7 @@ const createKillerPool = (players: number): KillerPool => {
 }
 
 describe("KillerPoolRepository", () => {
-    it("Can save and load KillerPool Game", () =>{
+    it("Can save and load KillerPool Game", () => {
         const eventStore: IEvent[] = [];
         const pool = createKillerPool(5);
         const repo = new KillerPoolRepository(eventStore);
@@ -37,9 +37,8 @@ describe("KillerPoolRepository", () => {
         repo.Save(pool);
         const savedPool = repo.GetById(pool.Id);
 
-        expect(savedPool.Id).eq(pool.Id);
-        for(let playerIndex in pool.Players)
-        {
+        expect(savedPool.Id).eq(pool.Id, "Id's do not match");
+        for (let playerIndex in pool.Players) {
             const poolPlayer = pool.Players[playerIndex];
             const savedPlayer = savedPool.Players[playerIndex];
             expect(savedPlayer.Name).eq(poolPlayer.Name, "Player name doesn't match");
