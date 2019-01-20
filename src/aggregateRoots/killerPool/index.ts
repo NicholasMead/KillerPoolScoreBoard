@@ -14,7 +14,7 @@ import { KillerPoolEvent } from "../../events/abstractions/KillerPoolEvent";
 import { DuplicatePlayerError } from "../../errors/DuplicatePlayerError";
 import { GameAlreadyStarted } from "../../errors/GameAlreadyStarted";
 import { GameNotStarted } from "../../errors/GameNotStarted";
-import { NoPlayersInGame } from "../../errors/NoPlayersInGame";
+import { InsufficientPlayersInGame } from "../../errors/InsufficientPlayersInGame";
 import { PlayerTookShot } from "../../events/PlayerTookShot";
 
 export class KillerPool extends Entity<Guid> {
@@ -46,6 +46,14 @@ export class KillerPool extends Entity<Guid> {
         this.Raise(new PlayerEnteredKillerPool(this, player));
     }
 
+    public InPlay(player: Player): boolean {
+        const score = this._score.find(s => s.Player.equals(player));
+
+        if(!score) return false;
+
+        return score.InPlay;
+    }
+
     public Lives(player: Player): number {
         const score = this._score.find(s => s.Player.equals(player));
 
@@ -61,7 +69,7 @@ export class KillerPool extends Entity<Guid> {
     }
 
     public StartGame() {
-        this.throwIfNoPlayers();
+        this.throwIfInsufficientPlayers();
         this.throwIfGameStarted();
         this.Raise(new KillerPoolStarted(this));
     }
@@ -82,7 +90,7 @@ export class KillerPool extends Entity<Guid> {
         const score = this._score.find(s => s.Player.equals(event.Player));
         
         if(!score) return;
-        score.Lives += event.Shot.Value;
+        score.ApplyShot(event.Shot);
         
         if(score.Player.equals(this.NextPlayer))
             this.passToNextPlayer();
@@ -117,9 +125,9 @@ export class KillerPool extends Entity<Guid> {
             throw new GameNotStarted();
     }
 
-    private throwIfNoPlayers()
+    private throwIfInsufficientPlayers()
     {
-        if(this._score.length < 1)
-            throw new NoPlayersInGame();
+        if(this._score.length < 2)
+            throw new InsufficientPlayersInGame();
     }
 }
