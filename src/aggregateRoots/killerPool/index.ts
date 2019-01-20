@@ -15,6 +15,7 @@ import { DuplicatePlayerError } from "../../errors/DuplicatePlayerError";
 import { GameAlreadyStarted } from "../../errors/GameAlreadyStarted";
 import { GameNotStarted } from "../../errors/GameNotStarted";
 import { NoPlayersInGame } from "../../errors/NoPlayersInGame";
+import { PlayerTookShot } from "../../events/PlayerTookShot";
 
 export class KillerPool extends Entity<Guid> {
     private _score: Score[] = [];
@@ -25,6 +26,7 @@ export class KillerPool extends Entity<Guid> {
         super(id);
         this.Register("PlayerEnteredKillerPool", this.onPlayerEntered.bind(this));
         this.Register("KillerPoolStarted", this.onGameStarted.bind(this));
+        this.Register("PlayerTookShot", this.onPlayerTookShot.bind(this));
     }
 
     public get NextPlayer(): Player {
@@ -55,9 +57,7 @@ export class KillerPool extends Entity<Guid> {
     
     public TakeShot(shot: Shot) {
         this.throwIfGameNotStarted();
-        let score = this._score[this._nextPlayerIndex];
-        score.Lives += shot.Value;
-        this.passToNextPlayer();
+        this.Raise(new PlayerTookShot(this, this.NextPlayer, shot));
     }
 
     public StartGame() {
@@ -66,16 +66,26 @@ export class KillerPool extends Entity<Guid> {
         this.Raise(new KillerPoolStarted(this));
     }
 
+    private onGameStarted(ev: IEvent)
+    {
+        this.acceptEvent<KillerPoolStarted>(ev);
+        this._gameStarted = true;
+    }
     private onPlayerEntered(ev: IEvent)
     {
         const event = this.acceptEvent<PlayerEnteredKillerPool>(ev);
         this._score.push(new Score(event.Player, 3));
     }
 
-    private onGameStarted(ev: IEvent)
-    {
-        this.acceptEvent<KillerPoolStarted>(ev);
-        this._gameStarted = true;
+    private onPlayerTookShot(ev: IEvent) {
+        const event = this.acceptEvent<PlayerTookShot>(ev);
+        const score = this._score.find(s => s.Player.equals(event.Player));
+        
+        if(!score) return;
+        score.Lives += event.Shot.Value;
+        
+        if(score.Player.equals(this.NextPlayer))
+            this.passToNextPlayer();
     }
 
     private acceptEvent<TEvent extends KillerPoolEvent>(ev: IEvent): TEvent

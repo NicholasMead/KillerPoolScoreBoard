@@ -84,7 +84,7 @@ describe("KillerPool", () => {
     it("Cannot shoot before the game starts", () => {
         const killer = new KillerPool(Guid.newGuid());
 
-        assert.throws(() => killer.TakeShot(Shot.Pass()), GameNotStarted);
+        assert.throws(() => killer.TakeShot(Shot.Pot(1)), GameNotStarted);
     });
 
     it("Shooting a foul loses 1 life", () => {
@@ -109,24 +109,24 @@ describe("KillerPool", () => {
         expect(killer.Lives(player1)).is.eq(1);
     });
 
-    it("Shooting a pass loses maintains lifes", () => {
+    it("Potting single ball maintains lifes", () => {
         const killer = new KillerPool(Guid.newGuid());
         const player1 = new Player("Nick");
         killer.AddPlayer(player1);
         killer.StartGame();
 
-        killer.TakeShot(Shot.Pass());
+        killer.TakeShot(Shot.Pot(1));
 
         expect(killer.Lives(player1)).is.eq(3);
     });
 
-    it("Shooting a gain loses adds lifes", () => {
+    it("Potting multiple balls adds lifes", () => {
         const killer = new KillerPool(Guid.newGuid());
         const player1 = new Player("Nick");
         killer.AddPlayer(player1);
         killer.StartGame();
 
-        killer.TakeShot(Shot.Gain(2));
+        killer.TakeShot(Shot.Pot(3));
 
         expect(killer.Lives(player1)).is.eq(5);
     });
@@ -139,7 +139,7 @@ describe("KillerPool", () => {
         killer.AddPlayer(player2);
         killer.StartGame();
 
-        killer.TakeShot(Shot.Pass());
+        killer.TakeShot(Shot.Pot(1));
 
         expect(killer.NextPlayer.Name).is.eq(player2.Name);
     });
@@ -154,9 +154,9 @@ describe("KillerPool", () => {
         killer.AddPlayer(player3);
         killer.StartGame();
 
-        killer.TakeShot(Shot.Pass());
-        killer.TakeShot(Shot.Pass());
-        killer.TakeShot(Shot.Pass());
+        killer.TakeShot(Shot.Pot(1));
+        killer.TakeShot(Shot.Pot(1));
+        killer.TakeShot(Shot.Pot(1));
 
         expect(killer.NextPlayer.Name).is.eq(player1.Name);
     });

@@ -3,7 +3,7 @@ import { ValueObject } from "../../framework/ValueObject";
 export class Shot extends ValueObject{
     private _value: number;
 
-    public constructor(value: number)
+    private constructor(value: number)
     {
         super();
         this._value = value;
@@ -17,17 +17,20 @@ export class Shot extends ValueObject{
         if(!severity)
             return new Shot(-1);
         
+        this.throwIfNotInteger(severity, "severity");
         return new Shot(-severity);
     }
 
-    public static Pass(): Shot{
-        return new Shot(0);
+    public static Pot(ballCount: number): Shot{
+        this.throwIfNotInteger(ballCount, "ballCount");
+        if(ballCount < 0)
+            throw new Error(`Cannot pot ${ballCount} balls.`)
+
+        return new Shot(ballCount - 1);
     }
 
-    public static Gain(lives?: number): Shot{
-        if(!lives)
-            return new Shot(1);
-    
-        return new Shot(lives);
+    private static throwIfNotInteger(number: number, paramName: string){
+        if(number % 1 !== 0)
+            throw new Error(`Paramater [${paramName}] must be an integer.`)
     }
 }
