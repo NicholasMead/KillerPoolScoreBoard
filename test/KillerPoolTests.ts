@@ -1,12 +1,12 @@
 import { expect, assert } from 'chai';
-import { KillerPool } from '../src/aggregateRoots/killerPool';
-import { Guid } from '../src/services/guid';
-import { Player } from '../src/aggregateRoots/killerPool/player';
-import { GameAlreadyStarted } from '../src/errors/GameAlreadyStarted';
-import { GameNotStarted } from '../src/errors/GameNotStarted';
-import { GameEnded } from '../src/errors/GameEnded';
-import { InsufficientPlayersInGame } from '../src/errors/InsufficientPlayersInGame';
-import { Shot } from '../src/aggregateRoots/killerPool/shot';
+import { KillerPool } from '../src/domain/aggregateRoots/killerPool';
+import { Guid } from '../src/domain/services/guid';
+import { Player } from '../src/domain/aggregateRoots/killerPool/player';
+import { GameAlreadyStarted } from '../src/domain/errors/GameAlreadyStarted';
+import { GameNotStarted } from '../src/domain/errors/GameNotStarted';
+import { GameEnded } from '../src/domain/errors/GameEnded';
+import { InsufficientPlayersInGame } from '../src/domain/errors/InsufficientPlayersInGame';
+import { Shot } from '../src/domain/aggregateRoots/killerPool/shot';
 
 const addPlayer = (killerPool: KillerPool) : Player => {
     const playerCount = killerPool.Players.length;
