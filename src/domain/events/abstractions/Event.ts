@@ -1,4 +1,5 @@
 import { IEvent } from "../../framework/IEvent";
+
 export abstract class Event implements IEvent {
     
     private type: string;

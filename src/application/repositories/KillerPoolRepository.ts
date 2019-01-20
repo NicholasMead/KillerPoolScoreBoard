@@ -1,18 +1,21 @@
-import { IEvent } from "../domain/framework/IEvent";
-import { Guid } from "../domain/services/guid";
-import { KillerPool } from "../domain/aggregateRoots/killerPool";
-import { KillerPoolEvent } from "../domain/events/abstractions/KillerPoolEvent";
+//Domain
+import { Guid } from "../../domain/services/guid";
+import { KillerPool } from "../../domain/aggregateRoots/killerPool";
+import { KillerPoolEvent } from "../../domain/events/abstractions/KillerPoolEvent";
+//Framework
+import { EventStore } from "../framework/eventStore";
 
 export class KillerPoolRepository {
-    private _eventStore: IEvent[];
+    private _eventStore: EventStore;
 
-    public constructor(eventStore: IEvent[])
+    public constructor(eventStore: EventStore)
     {
         this._eventStore = eventStore;
     }
 
     public GetById(id: Guid): KillerPool {
         const killerPool = new KillerPool(id);
+        killerPool.ClearEvents();
 
         this._eventStore
             .filter(ev => ev instanceof KillerPoolEvent)

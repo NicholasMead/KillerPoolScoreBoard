@@ -1,5 +1,5 @@
 import { Guid } from "../../services/guid";
-import { Event } from "./BaseEvent";
+import { Event } from "./Event";
 import { KillerPool } from "../../aggregateRoots/killerPool";
 
 export abstract class KillerPoolEvent extends Event {

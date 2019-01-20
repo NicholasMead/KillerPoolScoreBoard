@@ -3,9 +3,10 @@ import { expect, assert } from 'chai';
 //model
 import { KillerPool } from '../src/domain/aggregateRoots/killerPool';
 import { Player } from '../src/domain/aggregateRoots/killerPool/player';
-import { IEvent } from '../src/domain/framework/IEvent';
-import { KillerPoolRepository } from '../src/repositories/KillerPoolRepository';
 import { Shot } from '../src/domain/aggregateRoots/killerPool/shot';
+//application
+import { KillerPoolRepository } from '../src/application/repositories/KillerPoolRepository';
+import { EventStore } from '../src/application/framework/eventStore';
 
 const createKillerPool = (players: number): KillerPool => {
     const addPlayer = (killerPool: KillerPool): Player => {
@@ -30,7 +31,7 @@ const createKillerPool = (players: number): KillerPool => {
 
 describe("KillerPoolRepository", () => {
     it("Can save and load KillerPool Game", () => {
-        const eventStore: IEvent[] = [];
+        const eventStore: EventStore = [];
         const pool = createKillerPool(5);
         const repo = new KillerPoolRepository(eventStore);
 
