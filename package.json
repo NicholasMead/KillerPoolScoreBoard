@@ -1,5 +1,5 @@
 {
-  "name": "killerpoolscoreboard-domain",
+  "name": "killerpoolscoreboard",
   "version": "1.0.0",
   "description": "The application domain for KillerPoolScoreBoard",
   "main": "./dist/index.js",

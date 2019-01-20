@@ -1,2 +1,2 @@
-export * from './aggregateRoots/killerPool';
-export * from './aggregateRoots/killerPool/player';
+export * from './application/KillerPoolApplication';
+export * from './application/viewModels/scoreBoard';
