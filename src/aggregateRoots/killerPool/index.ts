@@ -16,6 +16,7 @@ import { GameAlreadyStarted } from "../../errors/GameAlreadyStarted";
 import { GameNotStarted } from "../../errors/GameNotStarted";
 import { InsufficientPlayersInGame } from "../../errors/InsufficientPlayersInGame";
 import { PlayerTookShot } from "../../events/PlayerTookShot";
+import { mapReduce } from "../../services/mapReduce";
 
 export class KillerPool extends Entity<Guid> {
     private _score: Score[] = [];
@@ -29,6 +30,12 @@ export class KillerPool extends Entity<Guid> {
         this.Register("PlayerTookShot", this.onPlayerTookShot.bind(this));
     }
 
+    public get GameEnded(): boolean {
+        if(!this._gameStarted) 
+            return false;
+        return this.getActivePlayers().length <= 1
+    }
+
     public get NextPlayer(): Player {
         this.throwIfGameNotStarted();
         return this._score[this._nextPlayerIndex].Player;
@@ -36,6 +43,17 @@ export class KillerPool extends Entity<Guid> {
 
     public get Players(): Player[] {
         return this._score.map(s => s.Player);
+    }
+
+    public get Winner(): Player | undefined {
+        if(this.GameEnded)
+        {
+            return mapReduce(this._score, new Player(""), (winner, score) => {
+                if(score.InPlay)
+                    return score.Player;
+                return winner;
+            })
+        }        
     }
 
     public AddPlayer(player: Player){
@@ -79,6 +97,7 @@ export class KillerPool extends Entity<Guid> {
         this.acceptEvent<KillerPoolStarted>(ev);
         this._gameStarted = true;
     }
+
     private onPlayerEntered(ev: IEvent)
     {
         const event = this.acceptEvent<PlayerEnteredKillerPool>(ev);
@@ -111,6 +130,15 @@ export class KillerPool extends Entity<Guid> {
         this._nextPlayerIndex++;
         if(this._nextPlayerIndex >= this._score.length)        
             this._nextPlayerIndex = 0;
+
+        if(!this.InPlay(this.NextPlayer))
+            this.passToNextPlayer();
+    }
+
+    private getActivePlayers(): Player[] {
+        return this._score
+            .filter(s => s.InPlay)
+            .map(s => s.Player);
     }
 
     private throwIfGameStarted()

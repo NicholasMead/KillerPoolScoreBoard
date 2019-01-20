@@ -195,4 +195,35 @@ describe("KillerPool", () => {
         expect(killer.Lives(players[0])).is.eq(0);
         expect(killer.InPlay(players[0])).is.eq(false);
     });
+
+    it("Players that are out, do not play shots", () => {
+        const killer = new KillerPool(Guid.newGuid());
+        const players = addPlayers(killer, 3);
+        killer.StartGame();
+
+        killer.TakeShot(Shot.Foul(4)); // p0 is out
+        killer.TakeShot(Shot.Pot(1)); // p1
+        killer.TakeShot(Shot.Pot(1)); // p2
+        killer.TakeShot(Shot.Pot(1)); // p1 (skiped p0 as out)
+
+        expect(killer.InPlay(players[0])).is.eq(false);
+        expect(killer.NextPlayer.Name).is.eq(players[2].Name);
+    });
+
+    
+    it("Last player remaining wins", () => {
+        const killer = new KillerPool(Guid.newGuid());
+        const players = addPlayers(killer, 3);
+        killer.StartGame();
+
+        killer.TakeShot(Shot.Foul(4)); // p0 is out
+        killer.TakeShot(Shot.Pot(1)); // p1
+        killer.TakeShot(Shot.Foul(3)); // p2 is out
+  
+        expect(killer.GameEnded).is.eq(true);
+        if(killer.Winner)
+            expect(killer.Winner.Name).is.eq(players[1].Name);
+        else
+            assert.fail("No winner after game ended");
+    });
 });
