@@ -2,21 +2,22 @@
 import { Player } from "./player";
 import { Score } from "./score";
 import { Shot } from "./shot";
-//framework
+//framework & extenal
 import { Entity } from "../../framework/Entity";
 import { IEvent } from "../../framework/IEvent";
 import { Guid } from "../../services/guid";
+import { mapReduce } from "../../services/mapReduce";
 //events
 import { PlayerEnteredKillerPool } from "../../events/PlayerEnteredKillerPool";
 import { KillerPoolStarted } from "../../events/KillerPoolStarted";
 import { KillerPoolEvent } from "../../events/abstractions/KillerPoolEvent";
+import { PlayerTookShot } from "../../events/PlayerTookShot";
 //errors
 import { DuplicatePlayerError } from "../../errors/DuplicatePlayerError";
 import { GameAlreadyStarted } from "../../errors/GameAlreadyStarted";
 import { GameNotStarted } from "../../errors/GameNotStarted";
 import { InsufficientPlayersInGame } from "../../errors/InsufficientPlayersInGame";
-import { PlayerTookShot } from "../../events/PlayerTookShot";
-import { mapReduce } from "../../services/mapReduce";
+import { GameEnded } from "../../errors/GameEnded";
 
 export class KillerPool extends Entity<Guid> {
     private _score: Score[] = [];
@@ -83,6 +84,7 @@ export class KillerPool extends Entity<Guid> {
     
     public TakeShot(shot: Shot) {
         this.throwIfGameNotStarted();
+        this.throwIfGameEnded();
         this.Raise(new PlayerTookShot(this, this.NextPlayer, shot));
     }
 
@@ -157,5 +159,11 @@ export class KillerPool extends Entity<Guid> {
     {
         if(this._score.length < 2)
             throw new InsufficientPlayersInGame();
+    }
+
+    private throwIfGameEnded()
+    {
+        if(this.GameEnded)
+            throw new GameEnded();
     }
 }

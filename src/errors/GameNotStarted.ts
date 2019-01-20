@@ -3,3 +3,4 @@ export class GameNotStarted extends Error {
         super(`Invalid opperation, the game has not started.`);
     }
 }
+

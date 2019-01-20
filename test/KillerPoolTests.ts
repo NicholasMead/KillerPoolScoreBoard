@@ -4,6 +4,7 @@ import { Guid } from '../src/services/guid';
 import { Player } from '../src/aggregateRoots/killerPool/player';
 import { GameAlreadyStarted } from '../src/errors/GameAlreadyStarted';
 import { GameNotStarted } from '../src/errors/GameNotStarted';
+import { GameEnded } from '../src/errors/GameEnded';
 import { InsufficientPlayersInGame } from '../src/errors/InsufficientPlayersInGame';
 import { Shot } from '../src/aggregateRoots/killerPool/shot';
 
@@ -187,7 +188,7 @@ describe("KillerPool", () => {
 
     it("Players with 0 lives are out of the game", () => {
         const killer = new KillerPool(Guid.newGuid());
-        const players = addPlayers(killer, 2);
+        const players = addPlayers(killer, 3);
         killer.StartGame();
 
         killer.TakeShot(Shot.Foul(4));
@@ -225,5 +226,14 @@ describe("KillerPool", () => {
             expect(killer.Winner.Name).is.eq(players[1].Name);
         else
             assert.fail("No winner after game ended");
+    });
+
+    it("Cannot take shots after game ended", () => {
+        const killer = new KillerPool(Guid.newGuid());
+        addPlayers(killer, 2);
+        killer.StartGame();
+        killer.TakeShot(Shot.Foul(4));
+        
+        assert.throws(() => killer.TakeShot(Shot.Pot(1)), GameEnded);
     });
 });
