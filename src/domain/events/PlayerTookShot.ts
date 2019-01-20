@@ -4,20 +4,20 @@ import { KillerPoolEvent } from "./abstractions/KillerPoolEvent";
 import { KillerPool } from "../aggregateRoots/killerPool/index";
 
 export class PlayerTookShot extends KillerPoolEvent {
-    private _player: Player;
-    private _shot: Shot;
+    private player: Player;
+    private shot: Shot;
 
     constructor(killerPool: KillerPool, player: Player, shot: Shot) {
         super("PlayerTookShot", killerPool);
-        this._player = player;
-        this._shot = shot;
+        this.player = player;
+        this.shot = shot;
     }
 
     public get Player(): Player {
-        return this._player;
+        return this.player;
     }
 
     public get Shot(): Shot {
-        return this._shot;
+        return this.shot;
     }
 }

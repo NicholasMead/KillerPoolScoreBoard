@@ -1,18 +1,18 @@
 import { IEvent } from "../../framework/IEvent";
-export abstract class BaseEvent implements IEvent {
+export abstract class Event implements IEvent {
     
-    private _type: string;
+    private type: string;
     public get Type() : string{
-        return this._type;
+        return this.type;
     }
 
-    private _time: number;
+    private time: number;
     public get Time() : number{
-        return this._time;
+        return this.time;
     }
     
     constructor(type: string) {
-        this._type = type;
-        this._time = Date.now();
+        this.type = type;
+        this.time = Date.now();
     }
 }
