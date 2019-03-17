@@ -1,20 +1,27 @@
 import * as React from 'react';
-import { Button } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 import './homepage.sass';
 import { PoolRack } from '../pollRack';
 
-export const HomePage = () => {
+interface IProps { }
+
+export const HomePage = (props: IProps) => {
     return (
         <main className="homepage">
-            <PoolRack id="logo" ballSize="10vmin" />
-            <h1>Killer Pool</h1>
-            <h3>Get stuck into a game!</h3>
-            <div>
-                <Button variant="contained">Join Existing Session</Button>
-            </div>
-            <div>
-                <Button variant="contained">Start New Session</Button>
-            </div>
+            <section id="LogoSection">
+                <PoolRack id="Logo" ballSize="10vmin" />
+            </section>
+            <section id="WelcomeText">
+                <Typography align="center" variant="h4">
+                    Welcome to Killer Pool
+                        </Typography>
+                <Typography align="center" variant="subtitle1">
+                    Because score keeping in killer pool is hella hard
+                        </Typography>
+            </section>
+            <section id="CTA">
+                <Button variant="contained" color="secondary">Start New Game</Button>
+            </section>
         </main>
     );
 }

@@ -7,23 +7,22 @@ interface IProps {
 
 export const PoolBall = (props: IProps) => {
     var colour: string;
-    switch(props.colour)
-    {
+    switch (props.colour) {
         default:
         case "black":
             colour = "#000";
             break;
-            
+
         case "white":
-        colour = "#fff";
-        break;
-        
+            colour = "#fff";
+            break;
+
         case "red":
             colour = "#ba2d0b";
             break;
-            
+
         case "yellow":
-            colour = "#ff0";
+            colour = "#f4e542";
             break;
     }
 
