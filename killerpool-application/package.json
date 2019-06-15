@@ -1,0 +1,13 @@
+{
+  "name": "killerpool-application",
+  "version": "1.0.0",
+  "description": "Application layer for teh killer pool app",
+  "main": "index.js",
+  "author": "Nicholas Mead",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@killerpool/domain": "file:../killerpool-domain",
+    "killerpool-domain": "file:../killerpool-domain"
+  }
+}
