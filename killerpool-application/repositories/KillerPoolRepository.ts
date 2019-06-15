@@ -1,7 +1,6 @@
 //Domain
-import { Guid } from "../../domain/services/guid";
-import { KillerPool } from "../../domain/aggregateRoots/killerPool";
-import { KillerPoolEvent } from "../../domain/events/abstractions/KillerPoolEvent";
+import { Guid, KillerPool, KillerPoolEvent } from "@killerpool/domain";
+
 //Framework
 import { EventStore } from "../framework/eventStore";
 

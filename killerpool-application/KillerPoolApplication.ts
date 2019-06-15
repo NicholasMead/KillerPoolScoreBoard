@@ -1,10 +1,11 @@
-import { IEvent } from "../domain/framework/IEvent";
-import { Player } from "../domain/aggregateRoots/killerPool/player";
+import { IEvent } from "@killerpool/domain";
+import { Player } from "@killerpool/domain";
+import { Guid } from "@killerpool/domain";
+import { KillerPool } from "@killerpool/domain";
+import { Shot } from "@killerpool/domain";
+
 import { ScoreBoard } from "./viewModels/scoreBoard";
-import { Guid } from "../domain/services/guid";
-import { KillerPool } from "../domain/aggregateRoots/killerPool";
 import { KillerPoolRepository } from "./repositories/KillerPoolRepository";
-import { Shot } from "../domain/aggregateRoots/killerPool/shot";
 
 export class KillerPoolApplication {
     private _gameId: Guid;
