@@ -11,14 +11,12 @@ function App() {
   return (
     <div className="App" >
       <Container>
-        <Row className="justify-content-center align-items-center" style={{height: "100vh"}}>
+        <Row className="justify-content-center align-items-center" style={{ height: "100vh" }}>
           <Col xs="auto">
-            <Card className="text-center" border="primary" >
+            <Card className="text-center" border="warning" >
               <Card.Body>
                 <Card.Title>Welcome to Killer Pool!</Card.Title>
-                <Card.Text>
-                  This app is still under construction
-            </Card.Text>
+                <Card.Text>This app is still under construction</Card.Text>
               </Card.Body>
             </Card>
           </Col>
